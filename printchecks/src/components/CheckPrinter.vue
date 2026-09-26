@@ -388,27 +388,38 @@
               {{ check.date }}
             </div>
             <div
+              class="date-line-container"
+              :style="{
+                position: 'absolute',
+                top: checkLines.dateLine.top,
+                left: checkLines.dateLine.left,
+                width: checkLines.dateLine.width,
+                height: '1px',
+                borderBottom: '1px solid black'
+              } as any"
+            ></div>
+            <div
               class="date"
               :style="{
                 ...checkStyles.fieldLabels,
                 position: 'absolute',
-                top: '90px',
+                top: '88px',
                 left: '780px'
               } as any"
             >
-              Date: _____________________
+              Date:
             </div>
             <div
               class="amount-box-border"
-              style="
-                position: absolute;
-                top: 195px;
-                left: 950px;
-                width: 225px;
-                height: 40px;
-                border: 1px solid #c7c7c7;
-                background-color: white;
-              "
+              :style="{
+                position: 'absolute',
+                top: checkLines.amountBox.top,
+                left: checkLines.amountBox.left,
+                width: checkLines.amountBox.width,
+                height: checkLines.amountBox.height,
+                border: '1px solid #c7c7c7',
+                backgroundColor: 'white'
+              } as any"
             ></div>
             <div
               class="amount-dollar-sign"
@@ -438,15 +449,29 @@
               {{ check.payTo }}
             </div>
             <div
+              class="payee-line-container"
+              :style="{
+                position: 'absolute',
+                top: checkLines.payeeLine.top,
+                left: checkLines.payeeLine.left,
+                width: checkLines.payeeLine.width,
+                height: '1px',
+                borderBottom: '1px solid black',
+                borderRight: '1px solid black'
+              } as any"
+            ></div>
+            <div
               class="pay-to"
               :style="{
                 ...checkStyles.fieldLabels,
                 position: 'absolute',
-                top: '170px',
-                left: '60px'
+                top: '208px',
+                left: '60px',
+                textAlign: 'right',
+                width: '80px'
               } as any"
             >
-              Pay to the <br />Order of: <span class="payto-line"></span>
+              Pay to the <br />Order of:
             </div>
             <div
               class="amount-line-data"
@@ -466,8 +491,8 @@
               :style="{
                 ...checkStyles.fieldLabels,
                 position: 'absolute',
-                top: '250px',
-                left: '60px'
+                top: checkLines.amountWordsLine.top,
+                left: checkLines.amountWordsLine.left
               } as any"
             >
               <span class="dollar-line"></span>
@@ -478,7 +503,7 @@
               class="amount-handdrawn-line"
               :style="{
                 position: 'absolute',
-                top: '252px',
+                top: checkLines.amountWordsHandDrawn,
                 left: `${check.lineLength + 60 + 45}px`,
                 width: `${840 - check.lineLength - 45}px`,
                 height: '6px'
@@ -502,15 +527,26 @@
               {{ check.memo }}
             </div>
             <div
+              class="memo-line-container"
+              :style="{
+                position: 'absolute',
+                top: checkLines.memoLine.top,
+                left: checkLines.memoLine.left,
+                width: checkLines.memoLine.width,
+                height: '1px',
+                borderBottom: '1px solid black'
+              } as any"
+            ></div>
+            <div
               class="memo"
               :style="{
                 ...checkStyles.fieldLabels,
                 position: 'absolute',
-                top: '390px',
+                top: '404px',
                 left: '60px'
               } as any"
             >
-              Memo: ____________________________________
+              Memo:
             </div>
             <div
               class="signature-data"
@@ -523,24 +559,24 @@
               {{ check.signature }}
             </div>
             <div
-              class="signature"
+              class="signature-line-container"
               :style="{
-                ...checkStyles.fieldLabels,
                 position: 'absolute',
-                top: '390px',
-                left: '750px'
+                top: checkLines.signatureLine.top,
+                left: checkLines.signatureLine.left,
+                width: checkLines.signatureLine.width,
+                height: '1px',
+                borderBottom: '1px solid black'
               } as any"
-            >
-              _______________________________
-            </div>
+            ></div>
             <div
               class="signature-label"
               :style="{
                 ...checkStyles.fieldLabels,
                 position: 'absolute',
-                top: '410px',
-                left: '780px',
-                width: '300px',
+                top: checkLines.signatureLabel.top,
+                left: checkLines.signatureLabel.left,
+                width: checkLines.signatureLabel.width,
                 textAlign: 'center'
               } as any"
             >
@@ -932,6 +968,12 @@ import BankAccountModal from './BankAccountModal.vue'
 import VendorModal from './VendorModal.vue'
 import { secureStorage } from '../services/secureStorage'
 import type { Vendor, BankAccount, PaymentRecord, FontSettings, LineItem } from '@/types'
+import {
+  CHECK_LINE_POSITIONS,
+  DEFAULT_CHECK_FIELD_POSITIONS
+} from '@/constants/checkFieldPositions'
+
+const checkLines = CHECK_LINE_POSITIONS
 
 
 const state = useAppStore()
@@ -1099,20 +1141,7 @@ const nextCheckNumber = computed(() => {
 const dynamicTextPositions = computed(() => {
   const logo = currentSettings.value?.logo
   if (!hasCustomLogo.value || !logo) {
-    // Return default positions when no logo
-    return {
-      accountHolderName: { top: '40px', left: '60px' },
-      accountHolderAddress: { top: '70px', left: '60px' },
-      checkNumber: { top: '40px', right: '50px' },
-      date: { top: '90px', left: '850px' },
-      payTo: { top: '200px', left: '180px' },
-      amount: { top: '202px', left: '970px' },
-      amountWords: { top: '240px', left: '100px' },
-      bankName: { top: '300px', left: '60px' },
-      memo: { top: '390px', left: '130px' },
-      signature: { top: '366px', left: '770px' },
-      bankInfo: { top: '435px', left: '0px' }
-    }
+    return { ...DEFAULT_CHECK_FIELD_POSITIONS }
   }
 
   const logoWidth = logo.size?.width || 100
@@ -1166,19 +1195,7 @@ const dynamicTextPositions = computed(() => {
   let positions: Record<
     string,
     { top?: string; left?: string; right?: string; bottom?: string; textAlign?: string }
-  > = {
-    accountHolderName: { top: '40px', left: '60px' },
-    accountHolderAddress: { top: '70px', left: '60px' },
-    checkNumber: { top: '40px', right: '50px' },
-    date: { top: '90px', left: '850px' },
-    payTo: { top: '200px', left: '180px' },
-    amount: { top: '202px', left: '970px' },
-    amountWords: { top: '240px', left: '100px' },
-    bankName: { top: '300px', left: '60px' },
-    memo: { top: '390px', left: '130px' },
-    signature: { top: '366px', left: '770px' },
-    bankInfo: { top: '435px', left: '0px' }
-  }
+  > = { ...DEFAULT_CHECK_FIELD_POSITIONS }
 
   // Adjust positions based on logo placement - text flows around logo
   if (logoPosition === 'top-left') {
@@ -2081,6 +2098,7 @@ label {
 .amount-data {
   font-size: 20px;
   font-weight: bold;
+  line-height: 1;
 }
 .check-data {
   margin-top: 50px;
