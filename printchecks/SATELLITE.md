@@ -12,10 +12,11 @@ CheckPrinter is the OWeb constellation app for professional check and payment-re
 
 | Setting | Value |
 |--------|--------|
-| Root | Repository root |
-| Build | `cd printchecks && npm install && npm run build` |
-| Output | `printchecks/dist` |
+| Root Directory | `printchecks` |
+| Build | `npm install && npm run build` |
+| Output | `dist` |
 | Framework | Vite (Vue) |
+| SPA rewrites | `printchecks/vercel.json` |
 
 ## OWeb registration
 
