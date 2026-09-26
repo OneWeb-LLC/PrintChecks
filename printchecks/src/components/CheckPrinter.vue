@@ -382,10 +382,12 @@
               {{ check.bankAddress || '' }}
             </div>
             <div
-              class="date-data"
-              :style="{ ...checkStyles.date, position: 'absolute', ...dynamicTextPositions.date } as any"
+              class="check-field-on-line"
+              :style="lineAnchorWrapperStyle(checkLineY.date, dynamicTextPositions.date) as any"
             >
-              {{ check.date }}
+              <div class="date-data" :style="checkStyles.date as any">
+                {{ check.date }}
+              </div>
             </div>
             <div
               class="date-line-container"
@@ -433,20 +435,32 @@
               $
             </div>
             <div
-              class="amount-data"
+              class="amount-in-box"
               :style="{
-                ...checkStyles.amount,
                 position: 'absolute',
-                ...dynamicTextPositions.amount
+                top: checkLines.amountBox.top,
+                left: checkLines.amountBox.left,
+                width: checkLines.amountBox.width,
+                height: checkLines.amountBox.height,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                paddingRight: '12px',
+                boxSizing: 'border-box',
+                pointerEvents: 'none'
               } as any"
             >
-              {{ formatMoney(check.amount) }}
+              <div class="amount-data" :style="checkStyles.amount as any">
+                {{ formatMoney(check.amount) }}
+              </div>
             </div>
             <div
-              class="pay-to-data"
-              :style="{ ...checkStyles.payTo, position: 'absolute', ...dynamicTextPositions.payTo } as any"
+              class="check-field-on-line"
+              :style="lineAnchorWrapperStyle(checkLineY.payee, dynamicTextPositions.payTo) as any"
             >
-              {{ check.payTo }}
+              <div class="pay-to-data" :style="checkStyles.payTo as any">
+                {{ check.payTo }}
+              </div>
             </div>
             <div
               class="payee-line-container"
@@ -474,17 +488,18 @@
               Pay to the <br />Order of:
             </div>
             <div
-              class="amount-line-data"
-              ref="line"
-              :style="{
-                ...checkStyles.amountWords,
-                position: 'absolute',
-                ...dynamicTextPositions.amountWords
-              } as any"
+              class="check-field-on-line"
+              :style="lineAnchorWrapperStyle(checkLineY.amountWords, dynamicTextPositions.amountWords) as any"
             >
-              ***
-              <span v-html="toWords(check.amount)"></span>
-              ***
+              <div
+                class="amount-line-data"
+                ref="line"
+                :style="checkStyles.amountWords as any"
+              >
+                ***
+                <span v-html="toWords(check.amount)"></span>
+                ***
+              </div>
             </div>
             <div
               class="amount-line"
@@ -521,10 +536,12 @@
               />
             </svg>
             <div
-              class="memo-data"
-              :style="{ ...checkStyles.memo, position: 'absolute', ...dynamicTextPositions.memo } as any"
+              class="check-field-on-line"
+              :style="lineAnchorWrapperStyle(checkLineY.memo, dynamicTextPositions.memo) as any"
             >
-              {{ check.memo }}
+              <div class="memo-data" :style="checkStyles.memo as any">
+                {{ check.memo }}
+              </div>
             </div>
             <div
               class="memo-line-container"
@@ -549,14 +566,12 @@
               Memo:
             </div>
             <div
-              class="signature-data"
-              :style="{
-                ...checkStyles.signature,
-                position: 'absolute',
-                ...dynamicTextPositions.signature
-              } as any"
+              class="check-field-on-line check-field-on-line-signature"
+              :style="lineAnchorWrapperStyle(checkLineY.signature, dynamicTextPositions.signature) as any"
             >
-              {{ check.signature }}
+              <div class="signature-data" :style="checkStyles.signature as any">
+                {{ check.signature }}
+              </div>
             </div>
             <div
               class="signature-line-container"
@@ -970,10 +985,13 @@ import { secureStorage } from '../services/secureStorage'
 import type { Vendor, BankAccount, PaymentRecord, FontSettings, LineItem } from '@/types'
 import {
   CHECK_LINE_POSITIONS,
-  DEFAULT_CHECK_FIELD_POSITIONS
+  CHECK_LINE_Y,
+  DEFAULT_CHECK_FIELD_POSITIONS,
+  lineAnchorWrapperStyle
 } from '@/constants/checkFieldPositions'
 
 const checkLines = CHECK_LINE_POSITIONS
+const checkLineY = CHECK_LINE_Y
 
 
 const state = useAppStore()
@@ -2093,6 +2111,19 @@ label {
 .amount-line-data {
   text-transform: capitalize;
 }
+.check-field-on-line {
+  transform: translateY(-100%);
+  z-index: 2;
+}
+
+.check-field-on-line-signature {
+  transform: translateY(calc(-100% - 2px));
+}
+
+.amount-in-box {
+  z-index: 2;
+}
+
 .date-data,
 .pay-to-data,
 .amount-data {
