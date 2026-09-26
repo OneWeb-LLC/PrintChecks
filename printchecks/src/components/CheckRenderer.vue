@@ -59,10 +59,12 @@
       {{ checkData.bankAddress || '' }}
     </div>
     <div
-      class="date-data"
-      :style="{ ...checkStyles.date, position: 'absolute', ...dynamicTextPositions.date }"
+      class="check-field-on-line"
+      :style="lineAnchorWrapperStyle(checkLineY.date, dynamicTextPositions.date)"
     >
-      {{ checkData.date }}
+      <div class="date-data" :style="checkStyles.date">
+        {{ checkData.date }}
+      </div>
     </div>
     <!-- Date line -->
     <div
@@ -76,15 +78,13 @@
         borderBottom: '1px solid black'
       }"
     ></div>
-    <!-- Date label - anchored bottom-right to line start -->
     <div
       class="date-label"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        bottom: '385px',
-        right: '255px',
-        textAlign: 'right'
+        top: '88px',
+        left: '780px'
       }"
     >
       Date:
@@ -101,30 +101,44 @@
         backgroundColor: 'white'
       }"
     ></div>
-    <!-- Dollar sign - anchored bottom-right to amount box -->
     <div
       class="amount-dollar-sign"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        bottom: '247px',
-        right: '245px',
-        textAlign: 'right'
+        top: '201px',
+        left: '935px'
       }"
     >
       $
     </div>
     <div
-      class="amount-data"
-      :style="{ ...checkStyles.amount, position: 'absolute', ...dynamicTextPositions.amount }"
+      class="amount-in-box"
+      :style="{
+        position: 'absolute',
+        top: checkLines.amountBox.top,
+        left: checkLines.amountBox.left,
+        width: checkLines.amountBox.width,
+        height: checkLines.amountBox.height,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingRight: '12px',
+        boxSizing: 'border-box',
+        pointerEvents: 'none'
+      }"
     >
-      {{ formatMoney(checkData.amount) }}
+      <div class="amount-data" :style="checkStyles.amount">
+        {{ formatMoney(checkData.amount) }}
+      </div>
     </div>
     <div
-      class="pay-to-data"
-      :style="{ ...checkStyles.payTo, position: 'absolute', ...dynamicTextPositions.payTo }"
+      class="check-field-on-line"
+      :style="lineAnchorWrapperStyle(checkLineY.payee, dynamicTextPositions.payTo)"
     >
-      {{ checkData.payTo }}
+      <div class="pay-to-data" :style="checkStyles.payTo">
+        {{ checkData.payTo }}
+      </div>
     </div>
     <!-- Payee Name Line - level with amount box, ending where amount words line ends -->
     <div
@@ -139,31 +153,28 @@
         borderRight: '1px solid black'
       }"
     ></div>
-    <!-- Pay to the Order of label - anchored bottom-right to line start -->
     <div
       class="pay-to-label"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        bottom: '260px',
-        right: '1050px',
-        textAlign: 'right'
+        top: '208px',
+        left: '60px',
+        textAlign: 'right',
+        width: '80px'
       }"
     >
       Pay to the<br />Order of:
     </div>
     <div
-      class="amount-line-data"
-      ref="line"
-      :style="{
-        ...checkStyles.amountWords,
-        position: 'absolute',
-        ...dynamicTextPositions.amountWords
-      }"
+      class="check-field-on-line"
+      :style="lineAnchorWrapperStyle(checkLineY.amountWords, dynamicTextPositions.amountWords)"
     >
-      ***
-      <span>{{ checkData.amountWords }}</span>
-      ***
+      <div class="amount-line-data" ref="line" :style="checkStyles.amountWords">
+        ***
+        <span>{{ checkData.amountWords }}</span>
+        ***
+      </div>
     </div>
     <div
       class="amount-line"
@@ -200,10 +211,12 @@
       />
     </svg>
     <div
-      class="memo-data"
-      :style="{ ...checkStyles.memo, position: 'absolute', ...dynamicTextPositions.memo }"
+      class="check-field-on-line"
+      :style="lineAnchorWrapperStyle(checkLineY.memo, dynamicTextPositions.memo)"
     >
-      {{ checkData.memo }}
+      <div class="memo-data" :style="checkStyles.memo">
+        {{ checkData.memo }}
+      </div>
     </div>
     <!-- Memo line -->
     <div
@@ -217,24 +230,24 @@
         borderBottom: '1px solid black'
       }"
     ></div>
-    <!-- Memo label - anchored bottom-right to line start -->
     <div
       class="memo-label"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        bottom: '77px',
-        right: '1085px',
-        textAlign: 'right'
+        top: '404px',
+        left: '60px'
       }"
     >
       Memo:
     </div>
     <div
-      class="signature-data"
-      :style="{ ...checkStyles.signature, position: 'absolute', ...dynamicTextPositions.signature }"
+      class="check-field-on-line check-field-on-line-signature"
+      :style="lineAnchorWrapperStyle(checkLineY.signature, dynamicTextPositions.signature)"
     >
-      {{ checkData.signature }}
+      <div class="signature-data" :style="checkStyles.signature">
+        {{ checkData.signature }}
+      </div>
     </div>
     <!-- Signature line -->
     <div
@@ -315,10 +328,13 @@ import { formatMoney } from '../utilities'
 import {
   CHECK_LAYOUT,
   CHECK_LINE_POSITIONS,
-  DEFAULT_CHECK_FIELD_POSITIONS
+  CHECK_LINE_Y,
+  DEFAULT_CHECK_FIELD_POSITIONS,
+  lineAnchorWrapperStyle
 } from '@/constants/checkFieldPositions'
 
 const checkLines = CHECK_LINE_POSITIONS
+const checkLineY = CHECK_LINE_Y
 
 interface CheckData {
   accountHolderName: string
@@ -549,6 +565,19 @@ const checkStyles = computed<Record<string, any>>(() => {
 <style scoped>
 .check-renderer {
   display: inline-block;
+}
+
+.check-field-on-line {
+  transform: translateY(-100%);
+  z-index: 2;
+}
+
+.check-field-on-line-signature {
+  transform: translateY(calc(-100% - 2px));
+}
+
+.amount-in-box {
+  z-index: 2;
 }
 
 .date-data,
