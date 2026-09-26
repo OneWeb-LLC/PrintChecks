@@ -59,115 +59,131 @@
       {{ checkData.bankAddress || '' }}
     </div>
     <div
-      class="date-data"
-      :style="{ ...checkStyles.date, position: 'absolute', ...dynamicTextPositions.date }"
+      class="check-field-on-line"
+      :style="lineAnchorWrapperStyle(checkLineY.date, dynamicTextPositions.date)"
     >
-      {{ checkData.date }}
+      <div class="date-data" :style="checkStyles.date">
+        {{ checkData.date }}
+      </div>
     </div>
     <!-- Date line -->
     <div
       class="date-line-container"
-      style="
-        position: absolute;
-        top: 105px;
-        left: 900px;
-        width: 155px;
-        height: 1px;
-        border-bottom: 1px solid black;
-      "
+      :style="{
+        position: 'absolute',
+        top: checkLines.dateLine.top,
+        left: checkLines.dateLine.left,
+        width: checkLines.dateLine.width,
+        height: '1px',
+        borderBottom: '1px solid black'
+      }"
     ></div>
-    <!-- Date label - anchored bottom-right to line start -->
     <div
       class="date-label"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        bottom: '385px',
-        right: '255px',
-        textAlign: 'right'
+        top: '88px',
+        left: '780px'
       }"
     >
       Date:
     </div>
     <div
       class="amount-box-border"
-      style="
-        position: absolute;
-        top: 195px;
-        left: 950px;
-        width: 225px;
-        height: 40px;
-        border: 1px solid #c7c7c7;
-        background-color: white;
-      "
+      :style="{
+        position: 'absolute',
+        top: checkLines.amountBox.top,
+        left: checkLines.amountBox.left,
+        width: checkLines.amountBox.width,
+        height: checkLines.amountBox.height,
+        border: '1px solid #c7c7c7',
+        backgroundColor: 'white'
+      }"
     ></div>
-    <!-- Dollar sign - anchored bottom-right to amount box -->
     <div
       class="amount-dollar-sign"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        bottom: '247px',
-        right: '245px',
-        textAlign: 'right'
+        top: '201px',
+        left: '935px'
       }"
     >
       $
     </div>
     <div
-      class="amount-data"
-      :style="{ ...checkStyles.amount, position: 'absolute', ...dynamicTextPositions.amount }"
+      class="amount-in-box"
+      :style="{
+        position: 'absolute',
+        top: checkLines.amountBox.top,
+        left: checkLines.amountBox.left,
+        width: checkLines.amountBox.width,
+        height: checkLines.amountBox.height,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingRight: '12px',
+        boxSizing: 'border-box',
+        pointerEvents: 'none'
+      }"
     >
-      {{ formatMoney(checkData.amount) }}
+      <div class="amount-data" :style="checkStyles.amount">
+        {{ formatMoney(checkData.amount) }}
+      </div>
     </div>
     <div
-      class="pay-to-data"
-      :style="{ ...checkStyles.payTo, position: 'absolute', ...dynamicTextPositions.payTo }"
+      class="check-field-on-line"
+      :style="lineAnchorWrapperStyle(checkLineY.payee, dynamicTextPositions.payTo)"
     >
-      {{ checkData.payTo }}
+      <div class="pay-to-data" :style="checkStyles.payTo">
+        {{ checkData.payTo }}
+      </div>
     </div>
     <!-- Payee Name Line - level with amount box, ending where amount words line ends -->
     <div
       class="payee-line-container"
-      style="
-        position: absolute;
-        top: 230px;
-        left: 150px;
-        width: 790px;
-        height: 1px;
-        border-bottom: 1px solid black;
-        border-right: 1px solid black;
-      "
+      :style="{
+        position: 'absolute',
+        top: checkLines.payeeLine.top,
+        left: checkLines.payeeLine.left,
+        width: checkLines.payeeLine.width,
+        height: '1px',
+        borderBottom: '1px solid black',
+        borderRight: '1px solid black'
+      }"
     ></div>
-    <!-- Pay to the Order of label - anchored bottom-right to line start -->
     <div
       class="pay-to-label"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        bottom: '260px',
-        right: '1050px',
-        textAlign: 'right'
+        top: '208px',
+        left: '60px',
+        textAlign: 'right',
+        width: '80px'
       }"
     >
       Pay to the<br />Order of:
     </div>
     <div
-      class="amount-line-data"
-      ref="line"
-      :style="{
-        ...checkStyles.amountWords,
-        position: 'absolute',
-        ...dynamicTextPositions.amountWords
-      }"
+      class="check-field-on-line"
+      :style="lineAnchorWrapperStyle(checkLineY.amountWords, dynamicTextPositions.amountWords)"
     >
-      ***
-      <span>{{ checkData.amountWords }}</span>
-      ***
+      <div class="amount-line-data" ref="line" :style="checkStyles.amountWords">
+        ***
+        <span>{{ checkData.amountWords }}</span>
+        ***
+      </div>
     </div>
     <div
       class="amount-line"
-      :style="{ ...checkStyles.fieldLabels, position: 'absolute', top: '250px', left: '60px' }"
+      :style="{
+        ...checkStyles.fieldLabels,
+        position: 'absolute',
+        top: checkLines.amountWordsLine.top,
+        left: checkLines.amountWordsLine.left
+      }"
     >
       <span class="dollar-line"></span>
     </div>
@@ -177,7 +193,7 @@
       class="amount-handdrawn-line"
       :style="{
         position: 'absolute',
-        top: '252px',
+        top: checkLines.amountWordsHandDrawn,
         left: `${calculatedLineLength + 60 + 45}px`,
         width: `${840 - calculatedLineLength - 45}px`,
         height: '6px'
@@ -195,62 +211,64 @@
       />
     </svg>
     <div
-      class="memo-data"
-      :style="{ ...checkStyles.memo, position: 'absolute', ...dynamicTextPositions.memo }"
+      class="check-field-on-line"
+      :style="lineAnchorWrapperStyle(checkLineY.memo, dynamicTextPositions.memo)"
     >
-      {{ checkData.memo }}
+      <div class="memo-data" :style="checkStyles.memo">
+        {{ checkData.memo }}
+      </div>
     </div>
     <!-- Memo line -->
     <div
       class="memo-line-container"
-      style="
-        position: absolute;
-        top: 413px;
-        left: 115px;
-        width: 300px;
-        height: 1px;
-        border-bottom: 1px solid black;
-      "
+      :style="{
+        position: 'absolute',
+        top: checkLines.memoLine.top,
+        left: checkLines.memoLine.left,
+        width: checkLines.memoLine.width,
+        height: '1px',
+        borderBottom: '1px solid black'
+      }"
     ></div>
-    <!-- Memo label - anchored bottom-right to line start -->
     <div
       class="memo-label"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        bottom: '77px',
-        right: '1085px',
-        textAlign: 'right'
+        top: '404px',
+        left: '60px'
       }"
     >
       Memo:
     </div>
     <div
-      class="signature-data"
-      :style="{ ...checkStyles.signature, position: 'absolute', ...dynamicTextPositions.signature }"
+      class="check-field-on-line check-field-on-line-signature"
+      :style="lineAnchorWrapperStyle(checkLineY.signature, dynamicTextPositions.signature)"
     >
-      {{ checkData.signature }}
+      <div class="signature-data" :style="checkStyles.signature">
+        {{ checkData.signature }}
+      </div>
     </div>
     <!-- Signature line -->
     <div
       class="signature-line-container"
-      style="
-        position: absolute;
-        top: 413px;
-        left: 750px;
-        width: 360px;
-        height: 1px;
-        border-bottom: 1px solid black;
-      "
+      :style="{
+        position: 'absolute',
+        top: checkLines.signatureLine.top,
+        left: checkLines.signatureLine.left,
+        width: checkLines.signatureLine.width,
+        height: '1px',
+        borderBottom: '1px solid black'
+      }"
     ></div>
     <div
       class="signature-label"
       :style="{
         ...checkStyles.fieldLabels,
         position: 'absolute',
-        top: '418px',
-        left: '750px',
-        width: '360px',
+        top: checkLines.signatureLabel.top,
+        left: checkLines.signatureLabel.left,
+        width: checkLines.signatureLabel.width,
         textAlign: 'center'
       }"
     >
@@ -307,6 +325,16 @@ import { computed, ref, watch, nextTick } from 'vue'
 import type { CSSProperties } from 'vue'
 import type { CustomizationSettings, FontSettings } from '@/types'
 import { formatMoney } from '../utilities'
+import {
+  CHECK_LAYOUT,
+  CHECK_LINE_POSITIONS,
+  CHECK_LINE_Y,
+  DEFAULT_CHECK_FIELD_POSITIONS,
+  lineAnchorWrapperStyle
+} from '@/constants/checkFieldPositions'
+
+const checkLines = CHECK_LINE_POSITIONS
+const checkLineY = CHECK_LINE_Y
 
 interface CheckData {
   accountHolderName: string
@@ -368,12 +396,12 @@ const containerStyle = computed<CSSProperties>(() => {
   const colors = props.settings.colors
 
   return {
-    width: '1200px',
-    height: '490px',
+    width: `${CHECK_LAYOUT.width}px`,
+    height: `${CHECK_LAYOUT.height}px`,
     backgroundColor: colors?.background || '#ffffff',
     backgroundImage: 'url(/src/assets/checkbg.png)',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: '1200px 490px',
+    backgroundSize: `${CHECK_LAYOUT.width}px ${CHECK_LAYOUT.height}px`,
     position: 'relative',
     fontFamily: 'Arial, sans-serif',
     transform: `scale(${props.scale})`,
@@ -384,20 +412,7 @@ const containerStyle = computed<CSSProperties>(() => {
 const dynamicTextPositions = computed(() => {
   const logo = props.settings?.logo
   if (!hasCustomLogo.value || !logo) {
-    // Return default positions when no logo
-    return {
-      accountHolderName: { top: '40px', left: '60px' },
-      accountHolderAddress: { top: '70px', left: '60px' },
-      checkNumber: { top: '40px', right: '50px' },
-      date: { top: '90px', left: '850px' },
-      payTo: { top: '200px', left: '180px' },
-      amount: { top: '202px', left: '970px' },
-      amountWords: { top: '240px', left: '100px' },
-      bankName: { top: '300px', left: '60px' },
-      memo: { top: '390px', left: '130px' },
-      signature: { top: '366px', left: '770px' },
-      bankInfo: { top: '435px', left: '0px' }
-    }
+    return { ...DEFAULT_CHECK_FIELD_POSITIONS }
   }
 
   const logoWidth = logo.size?.width || 100
@@ -447,23 +462,10 @@ const dynamicTextPositions = computed(() => {
 
   const bounds = logoBounds[logoPosition]
 
-  // Default positions (matched with CheckPrinter.vue for consistency)
   let positions: Record<
     string,
     { top?: string; left?: string; right?: string; bottom?: string; textAlign?: string }
-  > = {
-    accountHolderName: { top: '40px', left: '60px' },
-    accountHolderAddress: { top: '70px', left: '60px' },
-    checkNumber: { top: '40px', right: '50px' },
-    date: { top: '90px', left: '850px' },
-    payTo: { top: '200px', left: '180px' },
-    amount: { top: '202px', left: '970px' },
-    amountWords: { top: '240px', left: '100px' },
-    bankName: { top: '300px', left: '60px' },
-    memo: { top: '390px', left: '130px' },
-    signature: { top: '366px', left: '770px' },
-    bankInfo: { top: '435px', left: '0px' }
-  }
+  > = { ...DEFAULT_CHECK_FIELD_POSITIONS }
 
   // Adjust positions based on logo placement
   if (logoPosition === 'top-left') {
@@ -563,6 +565,56 @@ const checkStyles = computed<Record<string, any>>(() => {
 <style scoped>
 .check-renderer {
   display: inline-block;
+}
+
+.check-field-on-line {
+  transform: translateY(-100%);
+  z-index: 2;
+}
+
+.check-field-on-line-signature {
+  transform: translateY(calc(-100% - 2px));
+}
+
+.amount-in-box {
+  z-index: 2;
+}
+
+.date-data,
+.pay-to-data,
+.amount-data {
+  line-height: 1;
+}
+
+.amount-line-data {
+  text-transform: capitalize;
+}
+
+.signature-data {
+  font-family: Caveat, cursive;
+  font-size: 40px;
+  transform: rotate(-2deg);
+}
+
+.dollar-line::after {
+  content: 'Dollars';
+  font-size: 18px;
+  position: absolute;
+  right: -73px;
+  top: 0;
+}
+
+.dollar-line {
+  width: 840px;
+  display: block;
+  border-bottom: 1px solid black;
+  margin-left: 10px;
+  margin-top: 20px;
+}
+
+.amount-handdrawn-line {
+  filter: drop-shadow(0 0.3px 0.2px rgba(0, 0, 0, 0.2));
+  pointer-events: none;
 }
 
 .logo-container {
